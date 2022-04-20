@@ -76,24 +76,24 @@
       ?>
       <form action="./contact.php" method="post">
         <div>
-          <label>氏名</label>
+          <label>氏名</label><br>
           <input type="text" name="fullname" value="<?php echo $_SESSION["fullname"] ?>">
         </div>
         <div>
-          <label>フリガナ</label>
+          <label>フリガナ</label><br>
           <input type="text" name="kana" value="<?php echo $_SESSION["kana"] ?>">
         </div>
         <div>
-          <label>電話番号</label>
+          <label>電話番号</label><br>
           <input type="tel" name="tel" placeholder="ハイフンなし" value="<?php echo $_SESSION["tel"] ?>">
         </div>
         <div>
-          <label>メールアドレス</label>
+          <label>メールアドレス</label><br>
           <input type="email" name="email" value="<?php echo $_SESSION["email"] ?>">
         </div>
         <div>
-          <label>お問い合わせ内容</label>
-          <textarea name="body" placeholder="こちらにお問い合わせ内容を入力してください。"><?php echo $_SESSION["body"] ?></textarea>
+          <label>お問い合わせ内容</label><br>
+          <textarea name="body" cols="30" rows="10"  placeholder="こちらにお問い合わせ内容を入力してください。"><?php echo $_SESSION["body"] ?></textarea>
         </div>
         <div>
           <input type="submit" name="confirm" value="確認" class="button">
@@ -129,6 +129,30 @@
       </form>
     <?php } else { ?>
       <h1>完了画面</h1>
+      <?php
+        $dsn = 'mysql:dbname=casteria;host=localhost';
+        $user = 'root';
+        $password = '******';
+        
+        try{
+            $dbh = new PDO($dsn, $user, $password);
+        
+            $dbh -> exec
+            ('INSERT INTO contacts SET
+                name = "'.$_SESSION["fullname"].'",
+                kana = "'.$_SESSION["kana"].'",
+                tel = "'.$_SESSION["tel"].'",
+                email = "'.$_SESSION["email"].'",
+                body = "'.$_SESSION["body"].'",
+                created_at = NOW()'
+            );
+            $_SESSION["body"] = null;
+
+        }catch (PDOException $e){
+            print('Error:'.$e->getMessage());
+            die();
+        }
+      ?>
       <h4>
         お問い合わせ内容を送信しました。<br>
         ありがとうございました。
