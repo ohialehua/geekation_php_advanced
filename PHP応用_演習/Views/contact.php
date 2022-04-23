@@ -4,52 +4,13 @@
   require_once(ROOT_PATH .'Controllers/ContactController.php');
   $dbh = new Database();
   $controller = new ContactController();
+  $model = new Contact();
   $mode = "input";
-  $errmessage = array();
+  $errmessage = null;
   if( isset($_POST["back"] ) && $_POST["back"] ){
     // 何もしない
   } else if( isset($_POST["confirm"] ) && $_POST["confirm"] ){
-    if( !$_POST["fullname"] ){
-      $errmessage[]= "名前を入力して下さい";
-    } else if ( mb_strlen($_POST["fullname"]) > 10 ){
-      $errmessage[]= "名前は10文字以内にして下さい";
-    }
-    $_SESSION["fullname"] = htmlspecialchars($_POST["fullname"], ENT_QUOTES);
-    // JavaScriptの記号を無害化
-    // $_POST["fullname"]の値をこの関数を介して、変換された文字列をSESSION["fullname"]に入れている
-
-    if( !$_POST["kana"] ){
-      $errmessage[]= "フリガナを入力して下さい";
-    } else if ( mb_strlen($_POST["kana"]) > 10 ){
-      $errmessage[]= "フリガナは10文字以内にして下さい";
-    }
-    $_SESSION["kana"] = htmlspecialchars($_POST["kana"], ENT_QUOTES);
-
-    if( !preg_match( '/^0[0-9]{9,10}\z/', $_POST["tel"] ) ) {
-      $errmessage[]= "電話番号は0~9の数字でハイフンなしで入力してください。";
-    }
-    $_SESSION["tel"] = $_POST["tel"];
-
-    // バリデーションに使う正規表現
-    $pattern = "/^([a-zA-Z0-9])+([a-zA-Z0-9._-])*@([a-zA-Z0-9_-])+.+([a-zA-Z0-9._-]+)+$/";
-      // 使える文字はアルファベット大文字小文字 (a~z, A~Z) 、数字 (0~9)、記号 (. _ -)
-      // 文字列の最初の文字は、記号以外
-      // ＠を入れる
-      // ＠の後の最初の文字は、(.)以外
-      // ＠の前後で、それぞれ2文字以上の文字列が存在する
-      // ＠の後は「.」が一つ存在する
-    if( !$_POST["email"] ){
-      $errmessage[]= "メールアドレスを入力して下さい";
-    } else if ( !preg_match($pattern, $_POST["email"] ) ) {
-      $errmessage[]= "不正な形式のメールアドレスです。";
-    }
-    $_SESSION["email"] = htmlspecialchars($_POST["email"], ENT_QUOTES); 
-
-    if( !$_POST["body"] ){
-      $errmessage[]= "お問い合わせ内容を入力して下さい";
-    }
-    $_SESSION["body"] = htmlspecialchars($_POST["body"], ENT_QUOTES);
-
+    $errmessage = $model->validate();
     // エラーメッセージがある場合は入力画面に遷移
     if( $errmessage ){
         $mode = 'input';
@@ -58,8 +19,6 @@
     }
   } else if( isset($_POST["send"] ) && $_POST["send"] ){
     $mode = "send";
-  } else if( isset($_POST["update"] ) && $_POST["update"] ){
-    $mode = "update";
   } else {
     $SESSION = array();
     // GETで来た時用にセッションを初期化する
@@ -128,11 +87,7 @@
                 <td><?php echo $contact["email"] ?></td>
                 <td><?php echo $contact["body"] ?></td>
                 <td>
-                <form action="./contact.php" method="post">
-                  <a href="contact.php ?id=<?php print(htmlspecialchars($contact['id'], ENT_QUOTES)); ?>">
-                    <input type="submit" name="update" value="編集"/>
-                  </a>
-                </form>
+                  <button><a href="contact_update.php?id=<?php echo $contact['id']; ?>">編集</a></button>
                 </td>
               </tr>
             <?php } ?>
@@ -166,38 +121,6 @@
         <div>
           <input type="submit" name="back" value="戻る" />
           <input type="submit" name="send" value="送信" />
-        </div>
-      </form>
-    <?php } else if( $mode == "update" ) { ?>
-      <h1>編集画面</h1>
-        <?php
-          $contact = $controller->show();
-          $controller->update();
-        ?>
-      <form action="./contact.php" method="post">
-        <div>
-          <label>氏名</label><br>
-          <?php echo $contact['name'] ?>
-        </div>
-        <div>
-          <label>フリガナ</label><br>
-          <?php echo $contact["kana"] ?>
-        </div>
-        <div>
-          <label>電話番号</label><br>
-          <?php echo $contact["tel"] ?>
-        </div>
-        <div>
-          <label>メールアドレス</label><br>
-          <?php echo $contact["email"] ?>
-        </div>
-        <div>
-          <label>お問い合わせ内容</label><br>
-          <?php echo nl2br($contact["body"]) ?>
-        </div>
-        <div>
-          <input type="submit" name="back" value="戻る" />
-          <input type="submit" name="send" value="編集" />
         </div>
       </form>
     <?php } else { ?>

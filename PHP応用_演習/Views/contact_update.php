@@ -1,5 +1,5 @@
-<?php 
-session_start();
+<?php
+  session_start();
   require_once(ROOT_PATH .'database.php');
   require_once(ROOT_PATH .'Controllers/ContactController.php');
   $dbh = new Database();
