@@ -20,7 +20,12 @@
   } else if( isset($_POST["send"] ) && $_POST["send"] ){
     $mode = "send";
   } else if( isset($_POST["update"] ) && $_POST["update"] ){
-    $mode = "update";
+    $errmessage = $model->validate();
+    if( $errmessage ){
+        header("Location:".$_SERVER['HTTP_REFERER']);
+    } else {
+        $mode = 'update';
+    }
   } else {
     $SESSION = array();
     // GETで来た時用にセッションを初期化する
