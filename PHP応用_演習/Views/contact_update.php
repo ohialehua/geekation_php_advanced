@@ -8,31 +8,36 @@
 <h1>編集画面</h1>
         <?php
           $contact = $controller->show();
-          $controller->update();
         ?>
-      <form action="./contact.php" method="post">
+      <form action="./contact.php?id=<?php echo $contact['id']; ?>" method="post">
         <div>
           <label>氏名</label><br>
-          <?php echo $contact['name'] ?>
+          <input type="text" name="fullname" value="<?php echo $contact['name'] ?>">
         </div>
         <div>
           <label>フリガナ</label><br>
-          <?php echo $contact["kana"] ?>
+          <input type="text" name="kana" value="<?php echo $contact["kana"] ?>">
         </div>
         <div>
           <label>電話番号</label><br>
-          <?php echo $contact["tel"] ?>
+          <input type="tel" name="tel" value="<?php echo $contact["tel"] ?>">
         </div>
         <div>
           <label>メールアドレス</label><br>
-          <?php echo $contact["email"] ?>
+          <input type="email" name="email" value="<?php echo $contact["email"] ?>">
         </div>
         <div>
           <label>お問い合わせ内容</label><br>
-          <?php echo nl2br($contact["body"]) ?>
+          <textarea name="body" cols="30" rows="10"><?php echo nl2br($contact["body"]) ?></textarea>
         </div>
         <div>
-          <input type="submit" name="back" value="戻る" />
-          <input type="submit" name="send" value="編集" />
+          <h4>
+            上記の内容で編集いたします。<br>
+            よろしいですか？
+          </h4>
+        </div>
+        <div>
+          <input type="submit" name="back" value="キャンセル" />
+          <input type="submit" name="update" value="更新" />
         </div>
       </form>

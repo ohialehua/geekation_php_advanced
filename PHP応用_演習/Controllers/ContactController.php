@@ -32,11 +32,10 @@ class ContactController {
     }
 
     public function update() {
-      // $contacts = $this->dbh -> prepare("SELECT * FROM contacts WHERE id=?");
-      //       $contacts->execute(array($_REQUEST['id']));
-      //       if ($contact = $contacts->fetch()); 
+      $contact = $this->Contact -> update();
+      return $contact;
     }
-    
+
     public function destroy() {
       
     }

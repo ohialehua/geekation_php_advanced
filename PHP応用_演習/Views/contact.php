@@ -19,6 +19,8 @@
     }
   } else if( isset($_POST["send"] ) && $_POST["send"] ){
     $mode = "send";
+  } else if( isset($_POST["update"] ) && $_POST["update"] ){
+    $mode = "update";
   } else {
     $SESSION = array();
     // GETで来た時用にセッションを初期化する
@@ -123,10 +125,11 @@
           <input type="submit" name="send" value="送信" />
         </div>
       </form>
-    <?php } else { ?>
+    <?php } else if( $mode == "send" ) { ?>
       <h1>完了画面</h1>
       <?php
         $controller->create();
+        // $controller->update();
       ?>
       <h4>
         お問い合わせ内容を送信しました。<br>
@@ -135,6 +138,20 @@
       <form action="./">
         <div>
           <input type="submit" name="top" value="トップへ"/>
+        </div>
+      </form>
+    <?php } else { ?>
+      <h1>更新完了画面</h1>
+      <?php
+        $controller->update();
+      ?>
+      <h4>
+        内容の更新を完了しました。<br>
+        ありがとうございました。
+      </h4>
+      <form action="contact.php">
+        <div>
+          <input type="submit" name="input" value="入力画面へ"/>
         </div>
       </form>
     <?php } ?>

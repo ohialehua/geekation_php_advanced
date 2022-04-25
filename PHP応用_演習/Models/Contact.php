@@ -88,4 +88,23 @@ class Contact extends Database {
         die();
       }
     }
+
+    public function update() {
+      try{
+        $stmt = $this->dbh -> prepare('UPDATE contacts SET
+            name = "'.$_POST["fullname"].'",
+            kana = "'.$_POST["kana"].'",
+            tel = "'.$_POST["tel"].'",
+            email = "'.$_POST["email"].'",
+            body = "'.$_POST["body"].'"
+            WHERE id = :id');
+        $id = $_REQUEST['id'];
+        $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+      }catch (PDOException $e){
+        print('Error:'.$e->getMessage());
+        die();
+      }
+    }
   }
