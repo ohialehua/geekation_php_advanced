@@ -37,7 +37,8 @@ class ContactController {
     }
 
     public function destroy() {
-      
+      $contact = $this->Contact -> delete();
+      return $contact;
     }
 
 }

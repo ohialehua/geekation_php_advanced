@@ -9,7 +9,7 @@
   $errmessage = null;
   if( isset($_POST["back"] ) && $_POST["back"] ){
     // 何もしない
-  } else if( isset($_POST["confirm"] ) && $_POST["confirm"] ){
+  } else if( isset($_POST["confirm"] ) ){
     $errmessage = $model->validate();
     // エラーメッセージがある場合は入力画面に遷移
     if( $errmessage ){
@@ -17,15 +17,17 @@
     } else {
         $mode = 'confirm';
     }
-  } else if( isset($_POST["send"] ) && $_POST["send"] ){
-    $mode = "send";
-  } else if( isset($_POST["update"] ) && $_POST["update"] ){
+  } else if( isset($_POST["send"] ) ){
+      $mode = "send";
+  } else if( isset($_POST["update"] ) ){
     $errmessage = $model->validate();
     if( $errmessage ){
         header("Location:".$_SERVER['HTTP_REFERER']);
     } else {
         $mode = 'update';
     }
+  } else if( isset($_POST["delete"] ) ){
+      $mode = "delete";
   } else {
     $SESSION = array();
     // GETで来た時用にセッションを初期化する
@@ -44,6 +46,10 @@
           echo '<div class="alert alert-danger" role="alert">';
           echo implode('<br>', $errmessage );
           echo '</div>';
+        }
+        if( $_SESSION["flash"] ){
+          echo $_SESSION["flash"];
+          $_SESSION["flash"] = null;
         }
       ?>
       <form action="./contact.php" method="post">
@@ -96,6 +102,11 @@
                 <td>
                   <button><a href="contact_update.php?id=<?php echo $contact['id']; ?>">編集</a></button>
                 </td>
+                <td>
+                  <form action="./contact.php?id=<?php echo $contact['id']; ?>" method="post">
+                    <input type="submit" name="delete" value="削除" onclick="return confirm('本当に削除しますか？')">
+                  </form>
+                </td>
               </tr>
             <?php } ?>
             <tr></tr>
@@ -134,7 +145,6 @@
       <h1>完了画面</h1>
       <?php
         $controller->create();
-        // $controller->update();
       ?>
       <h4>
         お問い合わせ内容を送信しました。<br>
@@ -145,20 +155,18 @@
           <input type="submit" name="top" value="トップへ"/>
         </div>
       </form>
-    <?php } else { ?>
-      <h1>更新完了画面</h1>
-      <?php
+    <?php
+    } else if($mode == "update") {
         $controller->update();
-      ?>
-      <h4>
-        内容の更新を完了しました。<br>
-        ありがとうございました。
-      </h4>
-      <form action="contact.php">
-        <div>
-          <input type="submit" name="input" value="入力画面へ"/>
-        </div>
-      </form>
-    <?php } ?>
+        $mode = "input";
+        $_SESSION["flash"] = "内容の更新が完了しました。";
+        header("Location:contact.php");
+    } else {
+        $controller->destroy();
+        $mode = "input";
+        $_SESSION["flash"] = "内容の削除に成功しました。";
+        header("Location:contact.php");
+    }
+    ?>
     </body>
   </html>

@@ -107,4 +107,17 @@ class Contact extends Database {
         die();
       }
     }
+
+    public function delete() {
+      try{
+        $stmt = $this->dbh -> prepare('DELETE FROM contacts WHERE id = :id');
+        $id = $_REQUEST['id'];
+        $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+      }catch (PDOException $e){
+        print('Error:'.$e->getMessage());
+        die();
+      }
+    }
   }
