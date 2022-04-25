@@ -39,7 +39,7 @@ class Contact extends Database {
     } else if ( !preg_match($pattern, $_POST["email"] ) ) {
       $errmessage[]= "不正な形式のメールアドレスです。";
     }
-    $_SESSION["email"] = htmlspecialchars($_POST["email"], ENT_QUOTES); 
+    $_SESSION["email"] = htmlspecialchars($_POST["email"], ENT_QUOTES);
 
     if( !$_POST["body"] ){
       $errmessage[]= "お問い合わせ内容を入力して下さい";
