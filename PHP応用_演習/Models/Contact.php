@@ -73,51 +73,63 @@ class Contact extends Database {
 
     public function insert() {
       try{
-        $this->dbh -> exec
+        $this->dbh ->beginTransaction();
+        $res = $this->dbh -> exec
         ('INSERT INTO contacts SET
-            name = "'.$_SESSION["fullname"].'",
-            kana = "'.$_SESSION["kana"].'",
-            tel = "'.$_SESSION["tel"].'",
-            email = "'.$_SESSION["email"].'",
-            body = "'.$_SESSION["body"].'",
+            name = "'.htmlspecialchars($_SESSION["fullname"]).'",
+            kana = "'.htmlspecialchars($_SESSION["kana"]).'",
+            tel = "'.htmlspecialchars($_SESSION["tel"]).'",
+            email = "'.htmlspecialchars($_SESSION["email"]).'",
+            body = "'.htmlspecialchars($_SESSION["body"]).'",
             created_at = NOW()'
         );
         $_SESSION["body"] = null;
+        if($res) {
+          $this->dbh ->commit();
+        }
       }catch (PDOException $e){
         print('Error:'.$e->getMessage());
-        die();
+        $this->dbh ->rollBack();
       }
     }
 
     public function update() {
       try{
+        $this->dbh ->beginTransaction();
         $stmt = $this->dbh -> prepare('UPDATE contacts SET
-            name = "'.$_POST["fullname"].'",
-            kana = "'.$_POST["kana"].'",
-            tel = "'.$_POST["tel"].'",
-            email = "'.$_POST["email"].'",
-            body = "'.$_POST["body"].'"
+            name = "'.htmlspecialchars($_POST["fullname"]).'",
+            kana = "'.htmlspecialchars($_POST["kana"]).'",
+            tel = "'.htmlspecialchars($_POST["tel"]).'",
+            email = "'.htmlspecialchars($_POST["email"]).'",
+            body = "'.htmlspecialchars($_POST["body"]).'"
             WHERE id = :id');
         $id = $_REQUEST['id'];
         $stmt->bindValue(':id', $id, PDO::PARAM_INT);
-        $stmt->execute();
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        $res = $stmt->execute();
+        $stmt->fetch(PDO::FETCH_ASSOC);
+        if($res) {
+          $this->dbh ->commit();
+        }
       }catch (PDOException $e){
         print('Error:'.$e->getMessage());
-        die();
+        $this->dbh ->rollBack();
       }
     }
 
     public function delete() {
       try{
+        $this->dbh ->beginTransaction();
         $stmt = $this->dbh -> prepare('DELETE FROM contacts WHERE id = :id');
         $id = $_REQUEST['id'];
         $stmt->bindValue(':id', $id, PDO::PARAM_INT);
-        $stmt->execute();
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        $res = $stmt->execute();
+        $stmt->fetch(PDO::FETCH_ASSOC);
+        if($res) {
+          $this->dbh ->commit();
+        }
       }catch (PDOException $e){
         print('Error:'.$e->getMessage());
-        die();
+        $this->dbh ->rollBack();
       }
     }
   }

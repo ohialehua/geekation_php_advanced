@@ -55,7 +55,7 @@
                   <div class="col-7 col-lg-4">
                     <label>お問い合わせ内容</label><br>
                   </div>
-                  <textarea name="body" id="inputBody" class="p-2" style="width: 90%;" rows="10"><?php echo nl2br($contact["body"]) ?></textarea>
+                  <textarea name="body" id="inputBody" class="p-2" style="width: 90%;" rows="10"><?php echo $contact["body"] ?></textarea>
                 </div>
               </div>
             </div>

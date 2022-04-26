@@ -131,7 +131,7 @@
                   </td>
                   <td><?php echo $contact["tel"] ?></td>
                   <td><?php echo $contact["email"] ?></td>
-                  <td colspan="3"><?php echo $contact["body"] ?></td>
+                  <td colspan="3"><?php echo nl2br($contact["body"]) ?></td>
                   <td>
                     <div class="mb-3">
                       <a href="contact_update.php?id=<?php echo $contact['id']; ?>" class="btn btn-sm btn-secondary">編集</a>
