@@ -7,15 +7,15 @@
   $model = new Contact();
   $mode = "input";
   $errmessage = null;
+  // $flash = null;
   if( isset($_POST["back"] ) && $_POST["back"] ){
-    // 何もしない
   } else if( isset($_POST["confirm"] ) ){
     $errmessage = $model->validate();
     // エラーメッセージがある場合は入力画面に遷移
     if( $errmessage ){
-        $mode = 'input';
+      $mode = 'input';
     } else {
-        $mode = 'confirm';
+      $mode = 'confirm';
     }
   } else if( isset($_POST["send"] ) ){
       $mode = "send";
@@ -24,12 +24,12 @@
     if( $errmessage ){
         header("Location:".$_SERVER['HTTP_REFERER']);
     } else {
-        $mode = 'update';
+      $mode = 'update';
     }
   } else if( isset($_POST["delete"] ) ){
       $mode = "delete";
   } else {
-    $SESSION = array();
+    $_SESSION = array();
     // GETで来た時用にセッションを初期化する
   }
 ?>
@@ -62,14 +62,12 @@
                 echo implode('<br>', $errmessage );
                 echo '</div>';
               }
-              if( $_SESSION ){
-                if( $_SESSION["flash"] ){
-                  echo '<div class="alert alert-success" role="alert">';
-                  echo $_SESSION["flash"];
-                  echo '</div>';
-                  $_SESSION["flash"] = null;
-                }
-              }
+              // if( $flash ){
+              //   echo '<div class="alert alert-success" role="alert">';
+              //   echo $flash;
+              //   echo '</div>';
+              //   $flash = null;
+              // }
             ?>
             <form action="./contact.php" method="post" style="width: 100%;">
               <div class="col-md-12" style="display:inline-flex">
@@ -88,7 +86,7 @@
                   </div>
                   <div>
                     <label>メールアドレス</label><br>
-                    <input type="email" name="email" value="<?php if($_SESSION) {echo $_SESSION["email"];} ?>" style="width:80%;">
+                    <input type="email" name="email" value="<?php if($_SESSION) {echo $_SESSION["email"];} ?>" placeholder="xxxx@xxx.xx" style="width:80%;">
                   </div>
                 </div>
                 <div class="col-lg-6">
@@ -181,6 +179,11 @@
           </div>
         <?php } else if( $mode == "send" ) {
           $controller->create();
+          $_SESSION = array();
+          session_destroy();
+          if (isset($_COOKIE[session_name()])) {
+            setcookie(session_name(), '', time() - 3600, '/');
+          }
         ?>
           <h1>完了画面</h1>
           <div class="col-8 offset-2">
@@ -199,13 +202,23 @@
           <?php
           } else if($mode == "update") {
               $controller->update();
+              $_SESSION = array();
+              session_destroy();
+              if (isset($_COOKIE[session_name()])) {
+                setcookie(session_name(), '', time() - 3600, '/');
+              }
               $mode = "input";
-              $_SESSION["flash"] = "内容の更新が完了しました。";
+              // $flash = "内容の更新が完了しました。";
               header("Location:contact.php");
           } else {
               $controller->destroy();
+              $_SESSION = array();
+              session_destroy();
+              if (isset($_COOKIE[session_name()])) {
+                setcookie(session_name(), '', time() - 3600, '/');
+              }
               $mode = "input";
-              $_SESSION["flash"] = "内容の削除に成功しました。";
+              // $flash = "内容の削除に成功しました。";
               header("Location:contact.php");
           }
           ?>
