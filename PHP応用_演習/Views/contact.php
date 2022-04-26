@@ -52,139 +52,150 @@
         <?php require_once('header.php'); ?>
       </header>
       <main class="main pt-3">
-        <div class="container px-0">
-          <div class="row">
-            <div class="col">
-              <?php if( $mode == "input" ){ ?>
-              <h1>入力画面</h1>
-              <?php
-                if( $errmessage ){
-                  echo '<div class="alert alert-danger" role="alert">';
-                  echo implode('<br>', $errmessage );
-                  echo '</div>';
-                }
+        <div class="row">
+          <div class="col">
+          <?php if( $mode == "input" ){ ?>
+            <h1>入力画面</h1>
+            <?php
+              if( $errmessage ){
+                echo '<div class="alert alert-danger" role="alert">';
+                echo implode('<br>', $errmessage );
+                echo '</div>';
+              }
+              if( $_SESSION ){
                 if( $_SESSION["flash"] ){
+                  echo '<div class="alert alert-success" role="alert">';
                   echo $_SESSION["flash"];
+                  echo '</div>';
                   $_SESSION["flash"] = null;
                 }
-              ?>
-              <form action="./contact.php" method="post" style="width: 100%;">
-                <div class="col-12" style="display:inline-flex">
-                  <div class="col-5 mt-2">
-                    <div>
-                      <label>氏名</label><br>
-                      <input type="text" name="fullname" value="<?php if($_SESSION) {echo $_SESSION["fullname"];} ?> " style="width:80%;">
-                    </div>
-                    <div>
-                      <label>フリガナ</label><br>
-                      <input type="text" name="kana" value="<?php if($_SESSION) {echo $_SESSION["kana"];} ?>" style="width:80%;">
-                    </div>
-                    <div>
-                      <label>電話番号</label><br>
-                      <input type="tel" name="tel" placeholder="ハイフンなし" value="<?php if($_SESSION) {echo $_SESSION["tel"];} ?>" style="width:80%;">
-                    </div>
-                    <div>
-                      <label>メールアドレス</label><br>
-                      <input type="email" name="email" value="<?php if($_SESSION) {echo $_SESSION["email"];} ?>" style="width:100%;">
-                    </div>
+              }
+            ?>
+            <form action="./contact.php" method="post" style="width: 100%;">
+              <div class="col-md-12" style="display:inline-flex">
+                <div class="col-lg-6 mx-auto mt-2">
+                  <div>
+                    <label>氏名</label><br>
+                    <input type="text" name="fullname" value="<?php if($_SESSION) {echo $_SESSION["fullname"];} ?>" placeholder="例) 田中太郎" style="width:50%;">
                   </div>
-                  <div class="col-6 offset-1">
-                    <div>
-                      <label>お問い合わせ内容</label><br>
-                      <textarea name="body" cols="50" rows="10"  placeholder="こちらにお問い合わせ内容を入力してください。"><?php if($_SESSION) {echo $_SESSION["body"];} ?></textarea>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-1 offset-10 my-2 text-right">
-                  <input type="submit" name="confirm" value="確認" class="button">
-                </div>
-              </form>
-            </div>
-            <div class="col-12">
-              <table class="table table-danger">
-                <thead>
-                  <td>日時</td>
-                  <td>
+                  <div>
                     <label>フリガナ</label><br>
-                    氏名
-                  </td>
-                  <td>電話番号</td>
-                  <td>メールアドレス</td>
-                  <td colspan="3">お問い合わせ内容</td>
-                  <td></td>
-                  <td></td>
-                </thead>
-                <tbody>
-                <?php
-                  $contacts = $controller->index();
-                  foreach ($contacts as $contact) {
-                ?>
-                  <tr>
-                    <td><?php echo date('Y年n/j', strtotime($contact["created_at"])) ?></td>
-                    <td>
-                      <label><?php echo $contact["kana"] ?></label><br>
-                      <?php echo $contact["name"] ?>
-                    </td>
-                    <td><?php echo $contact["tel"] ?></td>
-                    <td><?php echo $contact["email"] ?></td>
-                    <td colspan="3"><?php echo $contact["body"] ?></td>
-                    <td>
-                      <button><a href="contact_update.php?id=<?php echo $contact['id']; ?>">編集</a></button>
-                    </td>
-                    <td>
-                      <form action="./contact.php?id=<?php echo $contact['id']; ?>" method="post">
-                        <input type="submit" name="delete" value="削除" onclick="return confirm('本当に削除しますか？')">
-                      </form>
-                    </td>
-                  </tr>
-                <?php } ?>
-                  <tr></tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-          <?php } else if( $mode == "confirm" ) { ?>
-            <h1>確認画面</h1>
-            <form action="./contact.php" method="post">
-              <div>
-                <label>氏名</label><br>
-                <?php echo $_SESSION["fullname"] ?>
+                    <input type="text" name="kana" value="<?php if($_SESSION) {echo $_SESSION["kana"];} ?>" placeholder="例) タナカタロウ" style="width:50%;">
+                  </div>
+                  <div>
+                    <label>電話番号</label><br>
+                    <input type="tel" name="tel" value="<?php if($_SESSION) {echo $_SESSION["tel"];} ?>" placeholder="ハイフンなし" style="width:50%;">
+                  </div>
+                  <div>
+                    <label>メールアドレス</label><br>
+                    <input type="email" name="email" value="<?php if($_SESSION) {echo $_SESSION["email"];} ?>" style="width:80%;">
+                  </div>
+                </div>
+                <div class="col-lg-6">
+                  <div style="text-align: center;">
+                    <div class="col-7 col-lg-4">
+                      <label>お問い合わせ内容</label><br>
+                    </div>
+                    <textarea name="body" placeholder="こちらにお問い合わせ内容を入力してください。" class="p-2" style="width: 90%;" rows="10"><?php if($_SESSION) {echo $_SESSION["body"];} ?></textarea>
+                  </div>
+                </div>
               </div>
-              <div>
-                <label>フリガナ</label><br>
-                <?php echo $_SESSION["kana"] ?>
-              </div>
-              <div>
-                <label>電話番号</label><br>
-                <?php echo $_SESSION["tel"] ?>
-              </div>
-              <div>
-                <label>メールアドレス</label><br>
-                <?php echo $_SESSION["email"] ?>
-              </div>
-              <div>
-                <label>お問い合わせ内容</label><br>
-                <?php echo nl2br($_SESSION["body"]) ?>
-              </div>
-              <div>
-                <input type="submit" name="back" value="戻る" />
-                <input type="submit" name="send" value="送信" />
+              <div class="col-2 offset-10 my-2 pr-5 text-right">
+                <input type="submit" name="confirm" value="確認" class="button">
               </div>
             </form>
-          <?php } else if( $mode == "send" ) { ?>
-            <h1>完了画面</h1>
-            <?php
-              $controller->create();
-            ?>
-            <h4>
+          </div>
+          <div class="col-12">
+            <table class="table table-danger">
+              <thead>
+                <td>日時</td>
+                <td>
+                  <label>フリガナ</label><br>
+                  氏名
+                </td>
+                <td>電話番号</td>
+                <td>メールアドレス</td>
+                <td colspan="3">お問い合わせ内容</td>
+                <td></td>
+              </thead>
+              <tbody>
+              <?php
+                $contacts = $controller->index();
+                foreach ($contacts as $contact) {
+              ?>
+                <tr>
+                  <td><?php echo date('Y年n/j', strtotime($contact["created_at"])) ?></td>
+                  <td>
+                    <label><?php echo $contact["kana"] ?></label><br>
+                    <?php echo $contact["name"] ?>
+                  </td>
+                  <td><?php echo $contact["tel"] ?></td>
+                  <td><?php echo $contact["email"] ?></td>
+                  <td colspan="3"><?php echo $contact["body"] ?></td>
+                  <td>
+                    <div class="mb-3">
+                      <a href="contact_update.php?id=<?php echo $contact['id']; ?>" class="btn btn-sm btn-secondary">編集</a>
+                    </div>
+                    <form action="./contact.php?id=<?php echo $contact['id']; ?>" method="post">
+                      <input type="submit" name="delete" value="削除" onclick="return confirm('本当に削除しますか？')" class="btn btn-sm btn-danger">
+                    </form>
+                  </td>
+                </tr>
+              <?php } ?>
+                <tr></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <?php } else if( $mode == "confirm" ) { ?>
+          <h1>確認画面</h1>
+          <div class="col-6 offset-3">
+            <form action="./contact.php" method="post">
+              <div class="text-center bg-light border">
+                <div class="border-bottom my-3 pb-2">
+                  <strong><label>氏名</label></strong><br>
+                  <?php echo $_SESSION["fullname"] ?>
+                </div>
+                <div class="border-bottom mb-3 pb-2">
+                  <strong><label>フリガナ</label></strong><br>
+                  <?php echo $_SESSION["kana"] ?>
+                </div>
+                <div class="border-bottom mb-3 pb-2">
+                  <strong><label>電話番号</label></strong><br>
+                  <?php echo $_SESSION["tel"] ?>
+                </div>
+                <div class="border-bottom mb-3 pb-2">
+                  <strong><label>メールアドレス</label></strong><br>
+                  <?php echo $_SESSION["email"] ?>
+                </div>
+                <div class="border-bottom pb-2">
+                  <strong><label>お問い合わせ内容</label></strong><br>
+                  <?php echo nl2br($_SESSION["body"]) ?>
+                </div>
+              </div>
+              <div class="text-center my-3">
+                <input type="submit" name="back" value="戻る" class="btn btn-sm btn-info mr-2" />
+                <input type="submit" name="send" value="送信" onclick="return confirm('こちらの内容で送信しますか？')" class="btn btn-sm btn-success ml-2" />
+              </div>
+            </form>
+          </div>
+        <?php } else if( $mode == "send" ) {
+          $controller->create();
+        ?>
+          <h1>完了画面</h1>
+          <div class="col-8 offset-2">
+            <div>
+            <h4 class="text-center my-5">
               お問い合わせ内容を送信しました。<br>
               ありがとうございました。
             </h4>
             <form action="./">
-              <div>
-                <input type="submit" name="top" value="トップへ"/>
+              <div class="text-center">
+                <input type="submit" name="top" value="トップへ" class="btn btn-sm btn-primary mb-5"/>
               </div>
             </form>
+          </div>
+        </div>
           <?php
           } else if($mode == "update") {
               $controller->update();
@@ -198,7 +209,6 @@
               header("Location:contact.php");
           }
           ?>
-        </div>
       </main>
       <footer>
         <?php require_once('footer.php'); ?>
